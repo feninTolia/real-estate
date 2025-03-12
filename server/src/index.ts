@@ -7,6 +7,7 @@ import cors from 'cors';
 import { authMiddleware } from './middleware/authMiddleware';
 import tenantRoutes from './routes/tenantRoutes';
 import managerRoutes from './routes/managerRoutes';
+import propertyRoutes from './routes/propertyRoutes';
 
 // CONFIGURATION
 config();
@@ -24,6 +25,7 @@ app.get('/', (_, res) => {
   res.send('This is home route');
 });
 
+app.use('/properties', propertyRoutes);
 app.use('/tenants', authMiddleware(['tenant']), tenantRoutes);
 app.use('/managers', authMiddleware(['manager']), managerRoutes);
 
