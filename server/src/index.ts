@@ -9,6 +9,7 @@ import tenantRoutes from './routes/tenantRoutes';
 import managerRoutes from './routes/managerRoutes';
 import propertyRoutes from './routes/propertyRoutes';
 import leaseRoutes from './routes/leaseRoutes';
+import applicationRoutes from './routes/applicationRoutes';
 
 // CONFIGURATION
 config();
@@ -28,6 +29,7 @@ app.get('/', (_, res) => {
 
 app.use('/properties', propertyRoutes);
 app.use('/leases', leaseRoutes);
+app.use('/applications', applicationRoutes);
 app.use('/tenants', authMiddleware(['tenant']), tenantRoutes);
 app.use('/managers', authMiddleware(['manager']), managerRoutes);
 
