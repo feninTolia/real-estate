@@ -10,6 +10,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
+  console.log(authUser, isLoading);
 
   useEffect(() => {
     if (authUser) {
@@ -22,20 +23,17 @@ const Layout = ({ children }: { children: ReactNode }) => {
       } else {
         setIsLoading(false);
       }
+    } else {
+      setIsLoading(false);
     }
   }, [authUser, pathname, router]);
 
   if (authLoading || isLoading) {
-    // return <Loading />;
     return <p>Loading...</p>;
   }
 
-  if (!authUser?.userRole) {
-    return null;
-  }
-
   return (
-    <div className="w-full h-full">
+    <div className={`w-full h-full`}>
       <Navbar />
       <main
         className="h-full flex w-full flex-col"
