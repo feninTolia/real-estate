@@ -1,6 +1,15 @@
-import { Button } from '@/components/ui/button';
+import { FilterState, initialState, setFilters } from '@/state';
+import { useAppSelector } from '@/state/redux';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { debounce } from 'lodash';
+import { cleanParams, cn, formatEnumString } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Search } from 'lucide-react';
+import { AmenityIcons, PropertyTypeIcons } from '@/lib/constants';
+import { Slider } from '@/components/ui/slider';
 import {
   Select,
   SelectContent,
@@ -8,28 +17,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
-import { AmenityIcons, PropertyTypeIcons } from '@/lib/constants';
-import { cleanParams, cn, formatEnumString } from '@/lib/utils';
-import { FilterState, initialState, setFilters } from '@/state';
-import { useAppSelector } from '@/state/redux';
-import { debounce } from 'lodash';
-import { Search } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { Label } from '@/components/ui/label';
 
 const FiltersFull = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
-
   const filters = useAppSelector((state) => state.global.filters);
-  const isFiltersFullOpen = useAppSelector(
-    (state) => state.global.isFilterFullOpen
-  );
-
   const [localFilters, setLocalFilters] = useState(initialState.filters);
+  const isFiltersFullOpen = useAppSelector(
+    (state) => state.global.isFiltersFullOpen
+  );
 
   const updateURL = debounce((newFilters: FilterState) => {
     const cleanFilters = cleanParams(newFilters);
@@ -45,15 +43,6 @@ const FiltersFull = () => {
     router.push(`${pathname}?${updatedSearchParams.toString()}`);
   });
 
-  const handleAmenityChange = (amenity: AmenityEnum) => {
-    setLocalFilters((prev) => ({
-      ...prev,
-      amenities: prev.amenities.includes(amenity)
-        ? prev.amenities.filter((a) => a !== amenity)
-        : [...prev.amenities, amenity],
-    }));
-  };
-
   const handleSubmit = () => {
     dispatch(setFilters(localFilters));
     updateURL(localFilters);
@@ -65,9 +54,38 @@ const FiltersFull = () => {
     updateURL(initialState.filters);
   };
 
-  if (!isFiltersFullOpen) {
-    return null;
-  }
+  const handleAmenityChange = (amenity: AmenityEnum) => {
+    setLocalFilters((prev) => ({
+      ...prev,
+      amenities: prev.amenities.includes(amenity)
+        ? prev.amenities.filter((a) => a !== amenity)
+        : [...prev.amenities, amenity],
+    }));
+  };
+
+  const handleLocationSearch = async () => {
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          localFilters.location
+        )}.json?access_token=${
+          process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+        }&fuzzyMatch=true`
+      );
+      const data = await response.json();
+      if (data.features && data.features.length > 0) {
+        const [lng, lat] = data.features[0].center;
+        setLocalFilters((prev) => ({
+          ...prev,
+          coordinates: [lng, lat],
+        }));
+      }
+    } catch (err) {
+      console.error('Error search location:', err);
+    }
+  };
+
+  if (!isFiltersFullOpen) return null;
 
   return (
     <div className="bg-white rounded-lg px-4 h-full overflow-auto pb-10">
@@ -88,7 +106,7 @@ const FiltersFull = () => {
               className="rounded-l-xl rounded-r-none border-r-0"
             />
             <Button
-              //   onClick={handleLocationSearch}
+              onClick={handleLocationSearch}
               className="rounded-r-xl rounded-l-none border-l-none border-black shadow-none border hover:bg-primary-700 hover:text-primary-50"
             >
               <Search className="w-4 h-4" />
@@ -101,7 +119,7 @@ const FiltersFull = () => {
           <h4 className="font-bold mb-2">Property Type</h4>
           <div className="grid grid-cols-2 gap-4">
             {Object.entries(PropertyTypeIcons).map(([type, Icon]) => (
-              <button
+              <div
                 key={type}
                 className={cn(
                   'flex flex-col items-center justify-center p-4 border rounded-xl cursor-pointer',
@@ -118,7 +136,7 @@ const FiltersFull = () => {
               >
                 <Icon className="w-6 h-6 mb-2" />
                 <span>{type}</span>
-              </button>
+              </div>
             ))}
           </div>
         </div>
@@ -221,7 +239,7 @@ const FiltersFull = () => {
           <h4 className="font-bold mb-2">Amenities</h4>
           <div className="flex flex-wrap gap-2">
             {Object.entries(AmenityIcons).map(([amenity, Icon]) => (
-              <button
+              <div
                 key={amenity}
                 className={cn(
                   'flex items-center space-x-2 p-2 border rounded-lg hover:cursor-pointer',
@@ -235,7 +253,7 @@ const FiltersFull = () => {
                 <Label className="hover:cursor-pointer">
                   {formatEnumString(amenity)}
                 </Label>
-              </button>
+              </div>
             ))}
           </div>
         </div>

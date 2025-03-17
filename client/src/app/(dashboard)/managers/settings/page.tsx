@@ -8,7 +8,6 @@ import {
 const ManagerSettings = () => {
   const { data: authUser, isLoading } = useGetAuthUserQuery();
   const [updateManager] = useUpdateManagerSettingsMutation();
-  console.log(authUser);
 
   if (isLoading) {
     return <p>Loading...</p>;

@@ -13,7 +13,7 @@ const SearchPage = () => {
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const isFiltersFullOpen = useAppSelector(
-    (state) => state.global.isFilterFullOpen
+    (state) => state.global.isFiltersFullOpen
   );
 
   useEffect(() => {
@@ -24,6 +24,8 @@ const SearchPage = () => {
           acc[key] = value.split(',').map((v) => (v === '' ? null : Number(v)));
         } else if (key === 'coordinates') {
           acc[key] = value.split(',').map(Number);
+        } else if (key === 'amenities') {
+          acc[key] = value.split(',');
         } else {
           acc[key] = value === 'any' ? null : value;
         }
@@ -32,8 +34,12 @@ const SearchPage = () => {
       },
       {}
     );
+    console.log('initialFilters', initialFilters);
 
     const cleanedFilters = cleanParams(initialFilters);
+
+    console.log('cleanedFilters', cleanedFilters);
+
     dispatch(setFilters(cleanedFilters));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

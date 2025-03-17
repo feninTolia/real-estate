@@ -10,7 +10,6 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
-  console.log(authUser, isLoading);
 
   useEffect(() => {
     if (authUser) {

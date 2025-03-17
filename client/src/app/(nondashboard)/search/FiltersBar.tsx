@@ -29,7 +29,7 @@ const FiltersBar = () => {
 
   const filters = useAppSelector((state) => state.global.filters);
   const isFiltersFullOpen = useAppSelector(
-    (state) => state.global.isFilterFullOpen
+    (state) => state.global.isFiltersFullOpen
   );
   const viewMode = useAppSelector((state) => state.global.viewMode);
 

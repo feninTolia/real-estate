@@ -6,7 +6,7 @@ import { Location } from '@prisma/client';
 import { Upload } from '@aws-sdk/lib-storage';
 import axios from 'axios';
 
-export const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
@@ -80,8 +80,15 @@ export const getProperties = async (
     }
 
     if (amenities && amenities !== 'any') {
-      const amenitiesArray = (amenities as string).split(',');
-      whereConditions.push(Prisma.sql`p.amenities @> ${amenitiesArray}`);
+      const amenitiesArray = (amenities as string)
+        .split(',')
+        .map((a) => a.trim());
+
+      whereConditions.push(
+        Prisma.sql`p."amenities" @> ARRAY[${Prisma.join(
+          amenitiesArray
+        )}]::"Amenity"[]`
+      );
     }
 
     if (availableFrom && availableFrom !== 'any') {

@@ -13,22 +13,23 @@ export interface FilterState {
 }
 interface InitialStateTypes {
   filters: FilterState;
-  isFilterFullOpen: boolean;
+  isFiltersFullOpen: boolean;
   viewMode: 'grid' | 'list';
 }
+
 export const initialState: InitialStateTypes = {
   filters: {
-    location: 'Kharkiv',
-    beds: '1',
-    baths: '1',
+    location: 'Los Angeles',
+    beds: 'any',
+    baths: 'any',
     propertyType: 'any',
-    amenities: ['string'],
-    availableFrom: 'string',
+    amenities: [],
+    availableFrom: 'any',
     priceRange: [null, null],
     squareFeet: [null, null],
-    coordinates: [50.0, 36.3],
+    coordinates: [-118.25, 34.05],
   },
-  isFilterFullOpen: false,
+  isFiltersFullOpen: false,
   viewMode: 'grid',
 };
 
@@ -40,7 +41,7 @@ export const globalSlice = createSlice({
       state.filters = { ...state.filters, ...action.payload };
     },
     toggleFiltersFullOpen: (state) => {
-      state.isFilterFullOpen = !state.isFilterFullOpen;
+      state.isFiltersFullOpen = !state.isFiltersFullOpen;
     },
     setViewMode: (state, action: PayloadAction<'grid' | 'list'>) => {
       state.viewMode = action.payload;
