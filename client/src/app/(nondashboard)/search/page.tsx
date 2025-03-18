@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import FiltersBar from './FiltersBar';
 import FiltersFull from './FiltersFull';
+import Listings from './Listings';
 import MapComponent from './Map';
 
 const SearchPage = () => {
@@ -63,7 +64,9 @@ const SearchPage = () => {
         </div>
 
         <MapComponent />
-        <div className="basis-4/12 overflow-y-auto">{/* <Listings /> */}</div>
+        <div className="basis-4/12 overflow-y-auto">
+          <Listings />
+        </div>
       </div>
     </div>
   );

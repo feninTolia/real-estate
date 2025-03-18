@@ -128,7 +128,7 @@ const Navbar = () => {
                       router.push(
                         authUser.userRole?.toLowerCase() === 'manager'
                           ? '/managers/properties'
-                          : '/tenants/favo rites',
+                          : '/tenants/favorites',
                         { scroll: false }
                       );
                     }}
