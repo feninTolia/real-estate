@@ -17,7 +17,7 @@ export const api = createApi({
     },
   }),
   reducerPath: 'api',
-  tagTypes: ['Managers', 'Tenants', 'Properties'],
+  tagTypes: ['Managers', 'Tenants', 'Properties', 'PropertyDetails'],
   endpoints: (build) => ({
     addUserToDB: build.query<User, void>({
       queryFn: async (_arg, _api, _extraOptions, baseQuery) => {
@@ -141,6 +141,13 @@ export const api = createApi({
           : [{ type: 'Properties', id: 'LIST' }],
     }),
 
+    getProperty: build.query<Property, number>({
+      query: (id) => `properties/${id}`,
+      providesTags: (_result, _error, id) => [
+        { type: 'PropertyDetails', id: id },
+      ],
+    }),
+
     //tenant related properties
     getTenant: build.query<Tenant, string>({
       query: (cognitoId) => `tenants/${cognitoId}`,
@@ -209,4 +216,5 @@ export const {
   useAddFavoritePropertyMutation,
   useRemoveFavoritePropertyMutation,
   useGetTenantQuery,
+  useGetPropertyQuery,
 } = api;
