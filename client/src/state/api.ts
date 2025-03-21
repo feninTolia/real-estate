@@ -154,6 +154,17 @@ export const api = createApi({
       providesTags: (result) => [{ type: 'Tenants', id: result?.id }],
     }),
 
+    getCurrentResidences: build.query<Property[], string>({
+      query: (cognitoId) => `tenants/${cognitoId}/current-residences`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Properties' as const, id })),
+              { type: 'Properties', id: 'LIST' },
+            ]
+          : [{ type: 'Properties', id: 'LIST' }],
+    }),
+
     updateTenantSettings: build.mutation<
       Tenant,
       { cognitoId: string } & Partial<Tenant>
@@ -217,4 +228,5 @@ export const {
   useRemoveFavoritePropertyMutation,
   useGetTenantQuery,
   useGetPropertyQuery,
+  useGetCurrentResidencesQuery,
 } = api;
