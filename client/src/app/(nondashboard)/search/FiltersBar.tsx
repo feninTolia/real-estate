@@ -76,6 +76,8 @@ const FiltersBar = () => {
 
   const handleLocationSearch = async () => {
     try {
+      console.log(searchInput);
+
       const response = await fetch(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
           searchInput

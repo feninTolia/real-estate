@@ -1,11 +1,56 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { setFilters } from '@/state';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 const Hero = () => {
+  const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+
+  const handleLocationSearch = async () => {
+    try {
+      const trimmedQuery = searchQuery.trim();
+      console.log(trimmedQuery);
+
+      if (!trimmedQuery) {
+        return;
+      }
+
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          trimmedQuery
+        )}.json?access_token=${
+          process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+        }&fuzzyMatch=true`
+      );
+
+      const data = await response.json();
+      if (data.features && data.features.length > 0) {
+        const [lng, lat] = data.features[0].center;
+
+        dispatch(
+          setFilters({ location: trimmedQuery, coordinates: [lng, lat] })
+        );
+
+        const params = new URLSearchParams({
+          location: trimmedQuery,
+          lat: lat.toString(),
+          lng: lng.toString(),
+        });
+
+        router.push(`/search?${params.toString()}`);
+      }
+    } catch (error) {
+      console.error('Error to search location', error);
+    }
+  };
+
   return (
     <div className=" relative h-screen">
       <Image
@@ -33,13 +78,15 @@ const Hero = () => {
           <div className="flex justify-center">
             <Input
               type="text"
-              value="Search query"
-              onChange={() => {}}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
               placeholder="Search by city, neighborhood or address"
               className="w-full max-w-lg rounded-none rounded-l-xl border-none bg-white h-12"
             />
             <Button
-              onClick={() => {}}
+              onClick={handleLocationSearch}
               variant="secondary"
               className="bg-secondary-500 h-12 border-none rounded-none rounded-r-xl text-white hover:bg-secondary-600"
             >

@@ -1,28 +1,13 @@
-'use client';
-
-import Link from 'next/link';
-
-// import { useRouter } from 'next/navigation';
-// import { useEffect } from 'react';
+import Navbar from '@/components/Navbar';
+import LandingPage from './(nondashboard)/landing/page';
 
 export default function Home() {
-  // const router = useRouter();
-  // useEffect(() => {
-  //   router.push('/landing');
-  // }, [router]);
-
   return (
-    <div className="text-3xl bg-red-400">
-      Home
-      <p>
-        <Link
-          href="/landing"
-          className="flex items-center mb-4 hover:text-primary-500"
-          scroll={false}
-        >
-          <span>Landing</span>
-        </Link>
-      </p>
+    <div className={`w-full h-full`}>
+      <Navbar />
+      <main className="h-full flex w-full flex-col">
+        <LandingPage />
+      </main>
     </div>
   );
 }
