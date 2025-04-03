@@ -77,7 +77,7 @@ const PropertyOverview = ({ propertyId }: PropertyOverviewProps) => {
       <div className="my-16">
         <h2 className="text-xl font-semibold mb-5">About {property.name}</h2>
         <p className="text-gray-500 leading-7">
-          <p> {property.description}</p>
+          <span>{property.description} </span>
           Experience resort style luxury living at Rentiful Homes, where the
           ocean and city are seamlessly intertwined. Our newly built community
           features sophisticated two and three-bedroom residences, each complete

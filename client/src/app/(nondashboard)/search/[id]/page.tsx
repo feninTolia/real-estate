@@ -7,6 +7,7 @@ import PropertyDetails from './PropertyDetails';
 import PropertyLocation from './PropertyLocation';
 import ContactWidget from './ContactWidget';
 import { useState } from 'react';
+import ApplicationModal from './ApplicationModal';
 
 const SingleListing = () => {
   const { id } = useParams();
@@ -34,6 +35,16 @@ const SingleListing = () => {
           />
         </div>
       </div>
+
+      {authUser && (
+        <ApplicationModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+          }}
+          propertyId={propertyId}
+        />
+      )}
     </div>
   );
 };

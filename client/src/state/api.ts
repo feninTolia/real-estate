@@ -308,6 +308,15 @@ export const api = createApi({
       }),
       invalidatesTags: ['Applications', 'Leases'],
     }),
+
+    createApplication: build.mutation<Application, Partial<Application>>({
+      query: (body) => ({
+        url: `applications`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Applications'],
+    }),
   }),
 });
 
@@ -328,4 +337,5 @@ export const {
   useCreatePropertyMutation,
   useGetApplicationsQuery,
   useUpdateApplicationStatusMutation,
+  useCreateApplicationMutation,
 } = api;
