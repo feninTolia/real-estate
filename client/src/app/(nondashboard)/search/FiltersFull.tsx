@@ -151,7 +151,6 @@ const FiltersFull = () => {
               localFilters.priceRange[0] ?? 0,
               localFilters.priceRange[1] ?? 10000,
             ]}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onValueChange={(value: any) =>
               setLocalFilters((prev) => ({
                 ...prev,

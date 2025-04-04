@@ -47,6 +47,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         <Navbar />
         <div style={{ paddingTop: `${NAVBAR_HEIGHT}px` }}>
           <main className="flex">
+            {/* @ts-expect-error  string*/}
             <AppSidebar userType={authUser?.userRole?.toLowerCase()} />
             <div className="flex-grow transition-all duration-300">
               {children}

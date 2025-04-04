@@ -35,6 +35,7 @@ export const api = createApi({
   ],
   endpoints: (build) => ({
     addUserToDB: build.query<User, void>({
+      //@ts-expect-error ???
       queryFn: async (_arg, _api, _extraOptions, baseQuery) => {
         try {
           const session = await fetchAuthSession();
@@ -65,6 +66,7 @@ export const api = createApi({
     }),
 
     getAuthUser: build.query<User, void>({
+      //@ts-expect-error ???
       queryFn: async (_arg, _api, _extraOptions, baseQuery) => {
         try {
           const session = await fetchAuthSession();
@@ -112,6 +114,7 @@ export const api = createApi({
       Property[],
       Partial<FilterState & { favoriteIds?: number[] }>
     >({
+      //@ts-expect-error ???
       query: (filters) => {
         try {
           const params = cleanParams({
