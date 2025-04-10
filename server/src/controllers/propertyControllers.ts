@@ -219,18 +219,31 @@ export const createProperty = async (
 
     const photoUrls = await Promise.all(
       files.map(async (file) => {
+        console.log(file.mimetype); // Should be like "image/jpeg"
+        console.log(file.buffer.length); // Should be non-zero
+
+        if (!file || !file.buffer || !file.mimetype) {
+          throw new Error(`Invalid file: ${file?.originalname || 'unknown'}`);
+        }
+
+        const key = `properties/${Date.now()}-${encodeURIComponent(
+          file.originalname
+        )}`;
+
         const uploadParams = {
           Bucket: process.env.S3_BUCKET_NAME!,
-          Key: `properties/${Date.now()}-${file.originalname}`,
+          Key: key,
           Body: file.buffer,
           ContentType: file.mimetype,
         };
         console.log('uploadParams', uploadParams);
 
-        const uploadResult = await new Upload({
+        const upload = new Upload({
           client: s3Client,
           params: uploadParams,
-        }).done();
+        });
+
+        const uploadResult = await upload.done();
 
         console.log('uploadResult', uploadResult);
 
