@@ -9,7 +9,11 @@ import axios from 'axios';
 const prisma = new PrismaClient();
 
 const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
+  region: process.env.AWS_REGION!,
+  credentials: {
+    accessKeyId: process.env.ACCESS_KEY_ID!,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY!,
+  },
 });
 
 export const getProperties = async (
@@ -221,15 +225,20 @@ export const createProperty = async (
           Body: file.buffer,
           ContentType: file.mimetype,
         };
+        console.log('uploadParams', uploadParams);
 
         const uploadResult = await new Upload({
           client: s3Client,
           params: uploadParams,
         }).done();
 
+        console.log('uploadResult', uploadResult);
+
         return uploadResult.Location;
       })
     );
+
+    console.log('photoUrls', photoUrls);
 
     const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
@@ -265,7 +274,7 @@ export const createProperty = async (
     const newProperty = await prisma.property.create({
       data: {
         ...propertyData,
-        photoUrls,
+        photoUrls: photoUrls ?? [],
         locationId: location.id,
         managerCognitoId,
         amenities:
